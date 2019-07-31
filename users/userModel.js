@@ -2,10 +2,11 @@ const db = require('../data/dbConfig');
 
 module.exports = {
   add,
-  addClass,
   find,
   findBy,
   findById,
+  update,
+  remove,
 };
 
 function find() {
@@ -25,18 +26,20 @@ function add(user) {
     });
 }
 
-function addClass(post) {
-    return db('classes')
-      .insert(post, 'id')
-      .then(ids => {
-        const [id] = ids;
-        return findById(id);
-      });
-  }
-  
-
 function findById(id) {
   return db('users')
     .where({ id })
     .first();
 }
+
+function update(id, changes) {
+    return db('users')
+      .where({ id })
+      .update(changes);
+  }
+  
+function remove(id) {
+    return db('users')
+      .where('id', id)
+      .del();
+  }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userDb = require('./userModel')
+const classDb = require('../classes/classModel')
 
 //GET all users
 
@@ -33,19 +34,52 @@ router.get('/:id', (req,res)=>{
 
 router.post('/:id/post' , (req,res) =>{
     const { id } = req.params;
-    let post = req.body;
+    let newPost = req.body;
 
-    userDb.addClass({trainer_id:id, ...post})
+    classDb.add({trainer_id:id, ...newPost})
         .then(post =>{
             res.status(201).json(post);
-            console.log(`New Fitness event added: ${post}`)
+            console.log(`New Fitness event added:`, post)
         })
         .catch(err => {
             res.status(500).json(err);
             console.log(err);
         })
-
-
 })
+
+// PUT changes to existing class by trainer
+
+router.put('/:trainer_id/post/:id' , (req,res) =>{
+    const { trainer_id, id } = req.params;
+    let changes = req.body;
+
+    classDb.update(id ,{trainer_id:trainer_id, ...changes})
+        .then(updated =>{
+            res.status(200).json(updated);
+            console.log(updated)
+        })
+        .catch(err => {
+            res.status(500).json(err);
+            console.log(err);
+        })
+})
+
+// DELETE class by trainer
+
+router.delete('/:trainer_id/post/:id' , (req,res) =>{
+    const { trainer_id, id } = req.params;
+
+    classDb.remove(id)
+        .then(deleted =>{
+            res.status(204).json(deleted);
+            console.log(deleted)
+        })
+        .catch(err => {
+            res.status(500).json(err);
+            console.log(err);
+        })
+})
+
+
 
 module.exports = router;
