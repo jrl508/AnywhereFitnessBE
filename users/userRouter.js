@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const userDb = require('./userModel')
-const classDb = require('../classes/classModel')
+const userDb = require('./userModel');
+const classDb = require('../classes/classModel');
+const auth = require('../auth/authenticate');
 
 //GET all users
 
@@ -32,7 +33,7 @@ router.get('/:id', (req,res)=>{
 
 //POST class by trainer
 
-router.post('/:id/post' , (req,res) =>{
+router.post('/:id/post' , auth.authenticate , (req,res) =>{
     const { id } = req.params;
     let newPost = req.body;
 
@@ -49,7 +50,7 @@ router.post('/:id/post' , (req,res) =>{
 
 // PUT changes to existing class by trainer
 
-router.put('/:trainer_id/post/:id' , (req,res) =>{
+router.put('/:trainer_id/post/:id' , auth.authenticate , (req,res) =>{
     const { trainer_id, id } = req.params;
     let changes = req.body;
 
@@ -66,7 +67,7 @@ router.put('/:trainer_id/post/:id' , (req,res) =>{
 
 // DELETE class by trainer
 
-router.delete('/:trainer_id/post/:id' , (req,res) =>{
+router.delete('/:trainer_id/post/:id' , auth.authenticate , (req,res) =>{
     const { trainer_id, id } = req.params;
 
     classDb.remove(id)
